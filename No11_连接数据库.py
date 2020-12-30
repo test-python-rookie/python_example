@@ -19,9 +19,13 @@ SELECT s.name AS 姓名,
 FROM student s
 JOIN (SELECT * FROM student_kemu s JOIN kemu k ON s.kemuid = k.id) k ON s.id = k.studentid
 GROUP BY s.name, s.sex, s.age
+HAVING group_concat(k.km separator '/') LIKE %s
 """
-mycursor.execute(str)
+no = ("%数学%", )
+mycursor.execute(str, no)
+mydb.commit()    # 数据表内容有更新（update,insert），必须使用到该语句
+myresult = mycursor.fetchall()
 table = PrettyTable(("姓名", "性别", "年龄", "科目"))
-for i in mycursor:
+for i in myresult:
     table.add_row(i)
 print(table)
